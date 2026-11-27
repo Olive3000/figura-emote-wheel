@@ -4,7 +4,10 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"AvatarManagerMixin",
-		"ClientLevelMixin"
+		"ClientLevelMixin",
+		"EntityRendererMixin",
+		"MinecraftMixin",
+		"PalBendMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -1,5 +1,6 @@
 package dev.local.fewheel.mixin;
 
+import dev.local.fewheel.PreviewTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -12,25 +13,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Emotecraft draws the wheel previews with an UnsafeMannequin living in a fake level.
- * Its getId() is hard-coded to Integer.MAX_VALUE (checked in the bytecode of build 179),
- * and Figura looks avatars up with Minecraft.level.getEntity(state.id), which finds nothing
- * for it. We tell Figura that this render state belongs to the local player.
+ * Its getId() is hard-coded to Integer.MAX_VALUE, and Figura looks avatars up with
+ * Minecraft.level.getEntity(state.id), which finds nothing for it. We tell Figura that
+ * this render state belongs to the local player.
  */
 @Mixin(targets = "org.figuramc.figura.avatar.AvatarManager", remap = false)
 public abstract class AvatarManagerMixin {
 
-    private static final int EMOTECRAFT_PREVIEW_ID = Integer.MAX_VALUE;
-
     private static boolean fewheel$isPreview(EntityRenderState state) {
         return state instanceof AvatarRenderState s
-                && s.id == EMOTECRAFT_PREVIEW_ID
+                && s.id == PreviewTracker.PREVIEW_ID
                 && Minecraft.getInstance().player != null;
     }
 
     @Inject(method = "getAvatarUnfiltered(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;)Lorg/figuramc/figura/avatar/Avatar;",
             at = @At("HEAD"), cancellable = true, remap = false)
     private static void fewheel$avatar(EntityRenderState state, CallbackInfoReturnable<Avatar> cir) {
-        if (!fewheel$isPreview(state)) return;
+        if (!fewheel$isPreview(state)) {
+            // any normal entity render: we are not drawing a preview anymore
+            PreviewTracker.current = null;
+            return;
+        }
+        PreviewTracker.current = PreviewTracker.MAP.get(state);
         Avatar avatar = org.figuramc.figura.avatar.AvatarManager.getAvatarForPlayer(Minecraft.getInstance().player.getUUID());
         if (avatar != null) cir.setReturnValue(avatar);
     }
