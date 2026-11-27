@@ -3,7 +3,8 @@
 	"package": "dev.local.fewheel.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"AvatarManagerMixin"
+		"AvatarManagerMixin",
+		"ClientLevelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
