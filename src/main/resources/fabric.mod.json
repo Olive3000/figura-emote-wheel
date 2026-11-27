@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "figura-emote-wheel",
+	"version": "${version}",
+	"name": "Figura Emote Wheel",
+	"description": "Shows your Figura avatar in the Emotecraft emote wheel previews.",
+	"authors": [
+		"Local"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/figura-emote-wheel/icon.png",
+	"environment": "client",
+	"mixins": [
+		"figura-emote-wheel.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"figura": "*",
+		"emotecraft": "*"
+	}
+}
